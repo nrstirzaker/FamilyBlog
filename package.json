@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "familyblog",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -9,6 +9,14 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.14.1"
+    "@astrojs/node": "^9.4.4",
+    "@supabase/supabase-js": "^2.74.0",
+    "astro": "^5.14.1",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.9.3"
   }
 }
