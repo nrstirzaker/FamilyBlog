@@ -1,4 +1,5 @@
 ---
+export const prerender = false
 import "../styles/global.css";
 import {actions} from "astro:actions";
 ---
@@ -17,18 +18,18 @@ import {actions} from "astro:actions";
 
         <div>
             <label for="familyName">Family Name</label>
-            <input type="text" id="familyName" placeholder="Family Name" name="familyName" required/>
+            <input type="text" id="familyName" placeholder="Family Name" name="familyName" />
         </div>
         <div>
             <label for="emailAddress">Email Address</label>
-            <input type="email" id="emailAddress" placeholder="Email Address" name="emailAddress" required/>
+            <input type="email" id="emailAddress" placeholder="Email Address" name="emailAddress" />
         </div>
         <div>
             <label for="privacyStatement">Privacy Statement</label>
-            <input type="checkbox" id="privacyStatement"  name="privacyStatement" required/>
+            <input type="checkbox" id="privacyStatement"  name="privacyStatement" value="FALSE"/>
         </div>
         <div>
-            <button type="button" id="button">Subscribe</button>
+            <button type="submit" id="button">Subscribe</button>
         </div>
 
     </form>
