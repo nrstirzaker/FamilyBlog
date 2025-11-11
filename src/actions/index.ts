@@ -1,9 +1,13 @@
 import { defineAction } from 'astro:actions';
 import { z } from 'astro:schema';
-import { createClient } from '@supabase/supabase-js'
+import { Pool } from 'pg';
+const pool = new Pool({
+    connectionString: import.meta.env.DATABASE_URL,
+    ssl: true,
+});
 
 
-const supabase = createClient(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY)
+
 
 export const server = {
     register: defineAction({
@@ -20,30 +24,23 @@ export const server = {
             console.log("formData:email:" + formData.emailAddress)
             console.log("formData:familyname:" + formData.familyName)
             console.log("formData:privacy:" + formData.privacyStatement)
-            console.log(import.meta.env.SUPABASE_URL)
-            console.log(import.meta.env.SUPABASE_KEY)
-            // const { data, error } = await supabase
-            //     .from('AddressBook')
-            //     .insert([
-            //         {
-            //             email_address: formData.emailAddress,
-            //             family_name:formData.familyName
-            //
-            //         },
-            //     ])
 
-            const { data, error } = await supabase
-                .from("public.address_book")
-                .select()
+            const insertSQL = "INSERT INTO address_book(family_name,email_address,privacy_statement) VALUES($1,$2,$3) RETURNING *";
+            const values  = [formData.familyName,formData.emailAddress,formData.privacyStatement]
 
 
-            if (error) {
-                console.error(error)
-
+            const client = await pool.connect();
+            try {
+                const res = await client.query(insertSQL, values);
+                console.log(res.rows[0])
+            } finally {
+                client.release();
             }
-            if (data) {
-                console.log(data)
-            }
+
+
+
+
+
         },
     })
 }
