@@ -14,21 +14,23 @@ export const server = {
     register: defineAction({
         accept: 'form',
         input: z.object({
-            familyName: z.string(),
-            emailAddress: z.string().email(),
-            privacyStatement: z.coerce.boolean()
+            yourFamilyName: z.string().max(50),
+            emailAddress: z.string().email().max(50)
         }),
 
         handler: async (formData) => {
 
-            const insertSQL = "INSERT INTO address_book(family_name,email_address,privacy_statement) VALUES($1,$2,$3) RETURNING *";
-            const values  = [formData.familyName,formData.emailAddress,formData.privacyStatement]
+            const insertSQL = "INSERT INTO address_book(family_name,email_address) VALUES($1,$2) RETURNING *";
+            const values  = [formData.yourFamilyName,formData.emailAddress]
 
 
             const client = await pool.connect();
             try {
                 const res = await client.query(insertSQL, values);
                 console.log(res.rows[0])
+                // TODO remove the above but add logging
+                // TODO redirect to thankyou page
+                // TODO send email confirming registration
             } finally {
                 client.release();
             }
