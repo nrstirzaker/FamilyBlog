@@ -10,28 +10,31 @@ import {actions} from "astro:actions";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
     <meta name="viewport" content="width=device-width"/>
     <meta name="generator" content={Astro.generator}/>
-    <title>Astro</title>
+    <title>Family Blog Registration</title>
 </head>
-<body>
-<h1>Family Blog - Register</h1>
-<form method="POST" action={actions.register}>
+<body class="h-screen flex justify-center items-center">
+    <div class="flex flex-col items-center">
+        <h1>Family Blog - Register</h1>
+        <form method="POST" action={actions.register}>
 
-    <div>
-        <label for="familyName">Family Name</label>
-        <input type="text" id="familyName" placeholder="Family Name" name="familyName" />
-    </div>
-    <div>
-        <label for="emailAddress">Email Address</label>
-        <input type="email" id="emailAddress" placeholder="Email Address" name="emailAddress" />
-    </div>
-    <div>
-        <label for="privacyStatement">Privacy Statement</label>
-        <input type="checkbox" id="privacyStatement"  name="privacyStatement" value="FALSE"/>
-    </div>
-    <div>
-        <button type="submit" id="button">Subscribe</button>
-    </div>
+            <div>
+                <label for="familyName">Family Name <span class="text-red-600">*</span></label>
+                <input type="text" id="familyName" placeholder="Family Name" name="familyName" />
+            </div>
+            <div>
+                <label for="emailAddress">Email Address</label>
+                <input type="email" id="emailAddress" placeholder="Email Address" name="emailAddress" />
+            </div>
+            <div>
+                <label for="privacyStatement">Privacy Statement</label>
+                <input type="checkbox" id="privacyStatement"  name="privacyStatement" value="FALSE"/>
+            </div>
+            <div>
+                <button type="submit" id="button">Subscribe</button>
+                <button type="reset" id="button">Cancel</button>
+            </div>
 
-</form>
+        </form>
+    </div>
 </body>
 </html>
