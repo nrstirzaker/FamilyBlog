@@ -20,11 +20,6 @@ export const server = {
         }),
 
         handler: async (formData) => {
-            const yesPrivacy: boolean = true;
-            console.log("inside handler")
-            console.log("formData:email:" + formData.emailAddress)
-            console.log("formData:familyname:" + formData.familyName)
-            console.log("formData:privacy:" + formData.privacyStatement)
 
             const insertSQL = "INSERT INTO address_book(family_name,email_address,privacy_statement) VALUES($1,$2,$3) RETURNING *";
             const values  = [formData.familyName,formData.emailAddress,formData.privacyStatement]
