@@ -2,6 +2,12 @@
 export const prerender = false
 import "../../styles/global.css";
 import {actions} from "astro:actions";
+
+let result = Astro.getActionResult(actions.register);
+result = result ? result : {"state": "failure"}
+if (result.state === "success") {
+    return Astro.redirect(`/thankyou`);
+}
 ---
 
 <html lang="en">

@@ -1,5 +1,5 @@
 export const prerender = false
-import { defineAction } from 'astro:actions';
+import { defineAction, ActionError } from "astro:actions";
 import { z } from 'astro:schema';
 import { Pool } from 'pg';
 
@@ -22,7 +22,7 @@ export const server = {
         handler: async (formData) => {
 
             const insertSQL = "INSERT INTO address_book(family_name,email_address) VALUES($1,$2) RETURNING *";
-            const values  = [formData.yourFamilyName,formData.emailAddress]
+            const values = [formData.yourFamilyName, formData.emailAddress]
 
 
             const client = await pool.connect();
@@ -32,9 +32,13 @@ export const server = {
                 // TODO remove the above but add logging
                 // TODO redirect to thankyou page
                 // TODO send email confirming registration
+            } catch (error: any) {
+                return {"state": "failure", error: error.message}
             } finally {
                 client.release();
             }
-            console.log("navigate")
 
-            return
+            return {"state": "success"};
+        }
+
+})}
