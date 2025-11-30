@@ -1,5 +1,5 @@
 export const prerender = false
-import { defineAction, ActionError } from "astro:actions";
+import { defineAction } from "astro:actions";
 import { z } from 'astro:schema';
 import { Pool } from 'pg';
 
@@ -15,8 +15,8 @@ export const server = {
     register: defineAction({
         accept: 'form',
         input: z.object({
-            yourFamilyName: z.string().max(50),
-            emailAddress: z.string().email().max(50)
+            yourFamilyName: z.string({message:"Please add your family name"}).max(50),
+            emailAddress: z.string({message:'Please add your email address'}).email('Not a valid email address').max(50)
         }),
 
         handler: async (formData) => {
@@ -27,18 +27,18 @@ export const server = {
 
             const client = await pool.connect();
             try {
-                const res = await client.query(insertSQL, values);
+
+                await client.query(insertSQL, values);
 
                 // TODO remove the above but add logging
-                // TODO redirect to thankyou page
                 // TODO send email confirming registration
             } catch (error: any) {
-                return {"state": "failure", error: error.message}
+                return {"error": {"type":"ServerError", "issues":[{"message": error.message}]}};
             } finally {
                 client.release();
             }
 
-            return {"state": "success"};
+            return {"familyName": "stirzaker"};
         }
 
 })}

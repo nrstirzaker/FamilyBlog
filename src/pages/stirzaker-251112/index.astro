@@ -1,13 +1,25 @@
 ---
 export const prerender = false
 import "../../styles/global.css";
-import {actions} from "astro:actions";
+import {actions, isInputError} from "astro:actions";
 
-let result = Astro.getActionResult(actions.register);
-result = result ? result : {"state": "failure"}
-if (result.state === "success") {
+
+let response : any  = Astro.getActionResult(actions.register);
+
+const inputErrors = isInputError(response?.error) ? response.error.fields : {}
+const serverError = (!isEmpty(inputErrors) && response.error) ? response.error.issues.message : {}
+const dataResponse = response?.data ? response?.data : {}
+const result = response && !inputErrors && !serverError ? response?.data.state : {}
+console.log("dataResponse:" + JSON.stringify(dataResponse));
+console.log("inputErrors:" + JSON.stringify(inputErrors));
+if (!isEmpty(dataResponse)) {
     return Astro.redirect(`/thankyou`);
 }
+
+function isEmpty(obj){
+    return !Object.keys(obj).length > 0;
+}
+
 ---
 
 <html lang="en">
@@ -17,42 +29,53 @@ if (result.state === "success") {
     <meta name="viewport" content="width=device-width"/>
     <meta name="generator" content={Astro.generator}/>
     <title>Our Family Stories Registration</title>
+
 </head>
 <body class="h-screen flex justify-center items-center bg-[#F2F4F7] text-[#333333] text-lg">
 <div class="flex flex-col items-center border-black">
     <h1 class="py-5 text-[#0866FF] text-5xl font-bold font-[Source Sans Pro]">Our Family Stories</h1>
 
     <div class="border-2 border-gray-50 bg-white rounded-md shadow-2xl p-10">
+        {result?.error && Object.keys(inputErrors).length === 0 && (
+                <p class="errorMsg">There was a problem processing your registration</p>)}
         <div class="flex justify-center w-100">
             <label class="text-black text-3xl">Registration</label>
         </div>
-        <form method="POST" action={actions.register} autocomplete="off">
+        <form method="POST" action={actions.register} autocomplete="off" id="registrationForm">
             <div class="py-10">
                 <div class="">
                     <!--<label for="familyName">Family Name <span class="text-red-600">&nbsp*</span></label>-->
-                    <input class="w-100 border rounded-md border-[#CCD0D5] bg-white p-2" type="text" id="yourFamilyName" placeholder="Your Family Name" name="yourFamilyName"/>
+                    <input class="w-100 border rounded-md border-[#CCD0D5] bg-white p-2"  type="text" id="yourFamilyName" placeholder="Your Family Name" name="yourFamilyName" data-error={inputErrors.yourFamilyName}/>
+                    {
+                        <div class="errorMsg"
+                             id="yourFamilyName-error">{inputErrors['yourFamilyName'] ? inputErrors['yourFamilyName'] : "Family Name Error"}</div>
+                    }
                 </div>
             </div>
             <div class="py-1">
                 <div class="">
                     <!--<label for="emailAddress">Email Address<span class="text-red-600">&nbsp*</span></label>-->
-                    <input class="w-100 border rounded-md border-[#CCD0D5] bg-white p-2" type="email" id="emailAddress" placeholder="Email Address" name="emailAddress" />
+                    <input class="w-100 border rounded-md border-[#CCD0D5] bg-white p-2"  type="text" id="emailAddress" placeholder="Email Address" name="emailAddress" data-error={inputErrors.emailAddress}/>
+                    {
+                        <div class="errorMsg"
+                             id="emailAddress-error">{inputErrors['emailAddress'] ? inputErrors['emailAddress'] : "Email Address error"}</div>
+                    }
                 </div>
             </div>
             <div class="py-2.5">
                 <div class="w-100">
-                    <label  for="privacyStatement">By registering you agree with how your data is collected as defined in the following <br/><a href="/stirzaker-251112/privacy">Privacy Statement</a></label>
+                    <label  for="privacyStatement">By registering you agree with how your data is collected as defined in the following <br/><a href="/privacy">Privacy Statement</a></label>
                 </div>
             </div>
 
             <div class="py-1">
                 <div class="flow-root">
                     <button class="w-30 float-left ml-10 rounded-md bg-[#00A400] py-1 px-2 text-white" type="submit"
-                            id="button">
+                            id="subscribeButton">
                         Subscribe
                     </button>
-                    <button class="w-30 float-right mr-10 rounded-md bg-[#3B3D3E] py-1 px-2 text-white" type="reset"
-                            id="button">
+                    <button class="w-30 float-right mr-10 rounded-md bg-[#3B3D3E] py-1 px-2 text-white" type="button"
+                            id="cancelButton">
                         Cancel
                     </button>
                 </div>
@@ -61,5 +84,23 @@ if (result.state === "success") {
         </form>
     </div>
 </div>
+
 </body>
+<script>
+
+    const cancelButton = document.getElementById("cancelButton");
+
+    if ("addEventListener" in cancelButton) {
+        cancelButton.addEventListener("click", () => {
+            const form:HTMLElement | null = document.getElementById("registrationForm")
+            if(form) (form as HTMLFormElement).reset();
+
+            const inputs = document.querySelectorAll("input");
+
+            inputs.forEach(input => {
+                input.removeAttribute("data-error");
+            })
+        });
+    }
+</script>
 </html>

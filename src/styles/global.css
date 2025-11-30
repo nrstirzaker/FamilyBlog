@@ -1,6 +1,24 @@
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
 @import "tailwindcss";
 
-a {
-    @apply underline;
-}
+@layer global, elements, components, utilities;
 
+@layer elements {
+    a {
+        @apply underline;
+        @apply text-blue-600;
+    }
+
+    input + .errorMsg   {
+        visibility: hidden;
+    }
+
+    input[data-error] + .errorMsg   {
+        visibility: visible;
+    }
+
+    .errorMsg {
+        @apply text-red-600;
+    }
+}
