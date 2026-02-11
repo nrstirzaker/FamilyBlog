@@ -18,7 +18,19 @@
         visibility: visible;
     }
 
+    textarea + .errorMsg   {
+        visibility: hidden;
+    }
+
+    textarea[data-error] + .errorMsg   {
+        visibility: visible;
+    }
+
     .errorMsg {
         @apply text-red-600;
     }
+}
+
+textarea {
+    resize: none;
 }

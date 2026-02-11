@@ -16,13 +16,14 @@ export const server = {
         accept: 'form',
         input: z.object({
             yourFamilyName: z.string({message:"Please add your family name"}).max(50),
-            emailAddress: z.string({message:'Please add your email address'}).email('Not a valid email address').max(50)
+            emailAddress: z.string({message:'Please add your email address'}).email('Not a valid email address').max(50),
+            whereDidWeFirstMeet: z.string({message:"For security please say where we first met"}).max(100),
         }),
 
         handler: async (formData) => {
 
-            const insertSQL = "INSERT INTO address_book(family_name,email_address) VALUES($1,$2) RETURNING *";
-            const values = [formData.yourFamilyName, formData.emailAddress]
+            const insertSQL = "INSERT INTO address_book(family_name,email_address,where_first_met) VALUES($1,$2,$3) RETURNING *";
+            const values = [formData.yourFamilyName, formData.emailAddress, formData.whereDidWeFirstMeet];
 
 
             const client = await pool.connect();
